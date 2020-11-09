@@ -10,12 +10,13 @@ jobs:
     name: Windows Export
     runs-on: ubuntu-latest
     container:
-      image: barichello/godot-ci:3.2.3
+      image: barichello/godot-ci:test
     steps:
       - name: Checkout
         uses: actions/checkout@v1
       - name: Setup
         run: |
+          chown -R root:root $HOME
           mkdir -v -p ~/.local/share/godot/templates
           mv /root/.local/share/godot/templates/${GODOT_VERSION}.stable ~/.local/share/godot/templates/${GODOT_VERSION}.stable
       - name: Windows Build
@@ -23,6 +24,11 @@ jobs:
           mkdir -v -p build/windows
           cd $EXPORT_NAME
           godot -v --export "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
+      - name: Convert png to ico
+        # Update the command below to reflect the path of your game icon
+        run: |
+          convert $GITHUB_WORKSPACE/test-project/icon.png -define icon:auto-resize="256,128,96,64,48,32,16" $GITHUB_WORKSPACE/icon.ico
+          cd $GITHUB_WORKSPACE; WINEPREFIX=$GITHUB_WORKSPACE/.wine wine $GITHUB_WORKSPACE/rcedit.exe $GITHUB_WORKSPACE/build/windows/$EXPORT_NAME.exe --set-icon $GITHUB_WORKSPACE/icon.ico
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:

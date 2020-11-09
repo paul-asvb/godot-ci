@@ -1,21 +1,21 @@
 FROM ubuntu:focal
-LABEL author="artur@barichello.me"
+LABEL author="https://github.com/aBARICHELLO/godot-ci/graphs/contributors"
 
 USER root
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update && apt-get full-upgrade --yes && apt-get install --yes --no-install-recommends \
+    adb \
     ca-certificates \
     git \
     git-lfs \
+    imagemagick \
+    openjdk-8-jdk-headless \
     python \
     python-openssl \
     unzip \
     wget \
-    zip \
-    adb \
-    openjdk-8-jdk-headless \
-    imagemagick \
     wine-stable \
+    zip \
     && rm -rf /var/lib/apt/lists/*
 
 RUN wget --no-verbose https://github.com/electron/rcedit/releases/download/v1.1.1/rcedit-x64.exe -O /usr/local/bin/rcedit.exe
